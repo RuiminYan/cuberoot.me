@@ -351,6 +351,39 @@ describe('网页与 PDF 共用 case 缩略图渲染计划', () => {
     expect(supportsRecognitionSimplification(cubeThumbParams('3x3', 'zbll', FACE))).toBe(true);
   });
 
+  it('2-look OLL 七个角块图与 OLL 页面一致，H 图旋转 90 度', () => {
+    const refs: Record<string, string> = {
+      Sune: "R U2' R' U' R U' R'",
+      Antisune: "R U R' U R U2' R' y'",
+      'H OLL': "R U R' U R U' R' U R U2' R'",
+      'T OLL': "F R' F' r U R U' r'",
+      'L OLL': "R' F' r U R U' r' F y'",
+      'Pi OLL': "R' U2' R2' U R2' U R2' U2' R'",
+      'U OLL': "R U2' R D R' U2' R D' R2' y2",
+    };
+    for (const [caseName, setup] of Object.entries(refs)) {
+      const plan = caseThumbPlan({
+        puzzle: '3x3',
+        set: '2-look-oll',
+        caseName,
+        sticker: FACE,
+        alg: 'ignored for setup-backed diagrams',
+        setup: 'the database setup is replaced for this diagram',
+      });
+      expect(plan.renderer).toBe('visualcube');
+      if (plan.renderer !== 'visualcube') continue;
+      expect(plan.params).toEqual({
+        view: 'oll',
+        hideGreySides: true,
+        scheme: 'FEFE00,404040,404040,404040,404040,404040',
+        puzzleSize: 3,
+      });
+      expect(plan.setup).toBe(setup);
+      expect(renderFromSimpleQuery({ view: 'oll', size: 88, setup: plan.setup, ngs: '1' }))
+        .toBe(renderFromSimpleQuery({ view: 'oll', size: 88, setup, ngs: '1' }));
+    }
+  });
+
   it.each(['sv', 'vls', 'wv'])('%s 共用 SV 的俯视遮罩图', (set) => {
     const params = cubeThumbParams('3x3', set, FACE);
     expect(params).toEqual({

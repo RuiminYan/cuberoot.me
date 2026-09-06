@@ -127,6 +127,7 @@ function isPuzzle(s: string): s is AlgPuzzle {
 function SvThumbImages({
   puzzle,
   set,
+  caseName,
   sticker,
   alg,
   setup,
@@ -138,6 +139,7 @@ function SvThumbImages({
 }: {
   puzzle: AlgPuzzle;
   set: string;
+  caseName?: string;
   sticker: AlgCase['sticker'];
   alg: string;
   setup?: string;
@@ -152,6 +154,7 @@ function SvThumbImages({
       <CaseThumb
         puzzle={puzzle}
         set={set}
+        caseName={caseName}
         sticker={sticker}
         alg={alg}
         setup={setup}
@@ -436,7 +439,7 @@ function SubgroupIndex({
                 <AlgCard
                   key={subLabel}
                   href={`/alg/${puzzle}/${set}/${subSlug}${querySuffix ?? ''}`}
-                  thumb={<CaseThumb puzzle={puzzle} set={set} sticker={sample.sticker} alg={subFirstAlg} setup={sample.setup} size={thumbSize} mask={pickerMask} loading="lazy" />}
+                  thumb={<CaseThumb puzzle={puzzle} set={set} caseName={sample.name} sticker={sample.sticker} alg={subFirstAlg} setup={sample.setup} size={thumbSize} mask={pickerMask} loading="lazy" />}
                   title={set === 'zbll' ? displayZbllToken(subLabel) : subLabel}
                 />
               );
@@ -1434,7 +1437,7 @@ export default function AlgCategoryView({ puzzleParam, set, subgroupParam, initi
                   href={`/alg/${puzzleParam}/${set}/${sub2Slug}${sq1QuerySuffix}`}
                   /* 子组卡片一页几十张,窄屏下整页能到 10000px 以上(实测 1lll / ollcp)。
                      懒加载在桌面是 no-op(整页都在 Chrome 阈值内),但手机首屏请求实测能砍掉三到五成。 */
-                  thumb={<CaseThumb puzzle={puzzleParam as AlgPuzzle} set={set} sticker={sample.sticker} alg={firstAlg} setup={sample.setup} size={thumbSize} mask={pickerMask} loading="lazy" />}
+                  thumb={<CaseThumb puzzle={puzzleParam as AlgPuzzle} set={set} caseName={sample.name} sticker={sample.sticker} alg={firstAlg} setup={sample.setup} size={thumbSize} mask={pickerMask} loading="lazy" />}
                   title={set === 'zbll' ? displayZbllToken(subLabel) : subLabel}
                 />
               );
@@ -1580,6 +1583,7 @@ export default function AlgCategoryView({ puzzleParam, set, subgroupParam, initi
                               <SvThumbImages
                                 puzzle={puzzleParam as AlgPuzzle}
                                 set={set}
+                                caseName={c.name}
                                 sticker={c.sticker}
                                 alg={firstAlg || c.setup || ''}
                                 setup={orientedSetup}
@@ -1595,6 +1599,7 @@ export default function AlgCategoryView({ puzzleParam, set, subgroupParam, initi
                               <CaseThumb
                                 puzzle={puzzleParam as AlgPuzzle}
                                 set={set}
+                                caseName={c.name}
                                 sticker={c.sticker}
                                 alg={firstAlg || c.setup || ''}
                                 setup={orientedSetup}
@@ -1620,6 +1625,7 @@ export default function AlgCategoryView({ puzzleParam, set, subgroupParam, initi
                             <CaseThumb
                               puzzle={puzzleParam as AlgPuzzle}
                               set={set}
+                              caseName={c.name}
                               sticker={c.sticker}
                               alg={firstAlg || c.setup || ''}
                               setup={orientedSetup}

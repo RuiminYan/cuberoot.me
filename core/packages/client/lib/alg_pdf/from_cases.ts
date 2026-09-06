@@ -117,7 +117,7 @@ export function algSheetFromCases(o: FromCasesOptions): AlgSheetInput {
         }),
         thumb: thumbs
           ? {
-              puzzle, set, sticker: c.sticker, alg: firstAlg || c.setup || '', setup, size: 160,
+              puzzle, set, caseName: c.name, sticker: c.sticker, alg: firstAlg || c.setup || '', setup, size: 160,
               ...(puzzle === 'sq1' ? { sq1BlackTop: o.sq1BlackTop ?? true } : {}),
               ...(o.simplifyRecognition ? { simplifyRecognition: true } : {}),
               ...(o.orientation !== undefined ? { orientation: o.orientation } : {}),

@@ -15,6 +15,7 @@ import { renderEngineSvg, engineForwardAlg } from '@/components/EnginePuzzleSVG'
 export interface CaseSvgInput {
   puzzle: AlgPuzzle;
   set: string;
+  caseName?: string;
   sticker: AlgSticker;
   /** 这张卡当前显示的公式(= case 态的解法,逆着看) */
   alg: string;
@@ -66,8 +67,8 @@ const cache = new Map<string, string | null>();
 const CACHE_CAP = 4000;
 
 export async function algCaseSvg(input: CaseSvgInput): Promise<string | null> {
-  const { puzzle, set, sticker, alg, setup, mask, size = 160, sq1BlackTop = true, simplifyRecognition = false, orientation } = input;
-  const key = `${puzzle}|${set}|${JSON.stringify(sticker)}|${mask ?? ''}|${size}|${sq1BlackTop}|${simplifyRecognition}|${orientation ?? ''}|${setup ?? ''}|${alg}`;
+  const { puzzle, set, caseName, sticker, alg, setup, mask, size = 160, sq1BlackTop = true, simplifyRecognition = false, orientation } = input;
+  const key = `${puzzle}|${set}|${caseName ?? ''}|${JSON.stringify(sticker)}|${mask ?? ''}|${size}|${sq1BlackTop}|${simplifyRecognition}|${orientation ?? ''}|${setup ?? ''}|${alg}`;
   const hit = cache.get(key);
   if (hit !== undefined) return hit;
   const svg = await renderCaseSvg(input);
@@ -77,9 +78,9 @@ export async function algCaseSvg(input: CaseSvgInput): Promise<string | null> {
 }
 
 async function renderCaseSvg({
-  puzzle, set, sticker, alg, setup, mask, size = 160, sq1BlackTop, simplifyRecognition, orientation,
+  puzzle, set, caseName, sticker, alg, setup, mask, size = 160, sq1BlackTop, simplifyRecognition, orientation,
 }: CaseSvgInput): Promise<string | null> {
-  const plan = caseThumbPlan({ puzzle, set, sticker, alg, setup, mask, sq1BlackTop, simplifyRecognition, orientation });
+  const plan = caseThumbPlan({ puzzle, set, caseName, sticker, alg, setup, mask, sq1BlackTop, simplifyRecognition, orientation });
   if (plan.renderer === 'inline-svg') return plan.svg || null;
   if (plan.renderer === 'asset') {
     try {

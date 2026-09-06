@@ -12,7 +12,7 @@ import { caseThumbPlan, DEFAULT_ALG_CUBE_ORIENTATION } from '@/lib/alg_thumb_pla
 import type { CaseViewAngle } from '@/lib/alg_display';
 
 export function CaseThumb({
-  puzzle, set, sticker, alg, setup, size = 88, mask: maskOverride, local, loading,
+  puzzle, set, caseName, sticker, alg, setup, size = 88, mask: maskOverride, local, loading,
   alt,
   sq1BlackTop = true,
   sq1SideBySide = false,
@@ -23,6 +23,7 @@ export function CaseThumb({
 }: {
   puzzle: AlgPuzzle;
   set: string;
+  caseName?: string;
   sticker: AlgSticker;
   alg: string;
   setup?: string;
@@ -51,8 +52,8 @@ export function CaseThumb({
   sq1Layer?: 'both' | 'top';
 }) {
   const plan = useMemo(() => caseThumbPlan({
-    puzzle, set, sticker, alg, setup, mask: maskOverride, sq1BlackTop, sq1SideBySide, simplifyRecognition, viewAngle, orientation,
-  }), [puzzle, set, sticker, alg, setup, maskOverride, sq1BlackTop, sq1SideBySide, simplifyRecognition, viewAngle, orientation]);
+    puzzle, set, caseName, sticker, alg, setup, mask: maskOverride, sq1BlackTop, sq1SideBySide, simplifyRecognition, viewAngle, orientation,
+  }), [puzzle, set, caseName, sticker, alg, setup, maskOverride, sq1BlackTop, sq1SideBySide, simplifyRecognition, viewAngle, orientation]);
 
   // Square-1 flat SVGs stack two layers vertically. Render at 2x then crop the
   // upper half so a requested single layer keeps the same visual size as a full thumb.

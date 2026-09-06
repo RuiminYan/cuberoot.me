@@ -79,6 +79,28 @@ export function supportsCubeOrientation(puzzle: AlgPuzzle, params: CubeThumbPara
   return ['2x2', '3x3', '4x4', '5x5'].includes(puzzle) && !params.scheme;
 }
 
+/** The seven corner cases on the 2-look OLL page use the matching OLL diagrams. */
+const TWO_LOOK_OLL_DIAGRAMS: Readonly<Record<string, string>> = {
+  sune: "R U2' R' U' R U' R'",
+  antisune: "R U R' U R U2' R' y'",
+  'h oll': "R U R' U R U' R' U R U2' R'",
+  't oll': "F R' F' r U R U' r'",
+  'l oll': "R' F' r U R U' r' F y'",
+  'pi oll': "R' U2' R2' U R2' U R2' U2' R'",
+  'u oll': "R U2' R D R' U2' R D' R2' y2",
+};
+
+function isTwoLookOllCornerCase(caseName?: string): boolean {
+  if (!caseName) return false;
+  return Object.hasOwn(TWO_LOOK_OLL_DIAGRAMS, caseName.trim().toLowerCase());
+}
+
+function twoLookOllDiagramSetup(caseName: string | undefined, setup: string | undefined): string | undefined {
+  const normalizedName = caseName?.trim().toLowerCase();
+  if (!normalizedName || !isTwoLookOllCornerCase(normalizedName)) return setup;
+  return TWO_LOOK_OLL_DIAGRAMS[normalizedName] ?? setup;
+}
+
 function pickView(
   puzzle: AlgPuzzle,
   set: string,
@@ -95,9 +117,13 @@ export function cubeThumbParams(
   set: string,
   sticker: AlgSticker,
   maskOverride?: string,
+  caseName?: string,
 ): CubeThumbParams {
   const puzzleSize = PUZZLE_SIZE[puzzle];
   if (puzzle === '2x2') return { view: 'plan', puzzleSize };
+  if (puzzle === '3x3' && set === '2-look-oll' && isTwoLookOllCornerCase(caseName)) {
+    return { view: 'oll', hideGreySides: true, puzzleSize };
+  }
   if (maskOverride) {
     const hideGreySides = CORNER_LL_MASK_NAMES.has(maskOverride) || undefined;
     return { view: 'pll', mask: maskOverride, hideGreySides, puzzleSize };
@@ -146,6 +172,8 @@ export type CaseThumbPlan =
 export interface CaseThumbPlanInput {
   puzzle: AlgPuzzle;
   set: string;
+  /** Canonical case name, used only for the 2-look OLL diagram correction. */
+  caseName?: string;
   sticker: AlgSticker;
   alg: string;
   setup?: string;
@@ -168,6 +196,7 @@ function driverFor(setup: string | undefined, alg: string): AlgDriver {
 export function caseThumbPlan({
   puzzle,
   set,
+  caseName,
   sticker,
   alg,
   setup,
@@ -272,7 +301,8 @@ export function caseThumbPlan({
     return { renderer: 'sr', kind: 'megaminx-top', driver: driverFor(setup, alg) };
   }
 
-  const params = cubeThumbParams(puzzle, set, sticker, mask);
+  const params = cubeThumbParams(puzzle, set, sticker, mask, caseName);
+  const diagramSetup = twoLookOllDiagramSetup(caseName, setup);
   const angle = supportsCaseViewAngle(params) ? viewAngle : 'default';
   const orientedScheme = supportsCubeOrientation(puzzle, params)
     ? visualCubeSchemeForOrientation(orientation, params.view === 'oll' && !params.mask)
@@ -280,7 +310,7 @@ export function caseThumbPlan({
   return {
     renderer: 'visualcube',
     algorithm: caseViewAlg(alg, angle),
-    setup: setup === undefined ? undefined : caseViewSetup(setup, angle),
+    setup: diagramSetup === undefined ? undefined : caseViewSetup(diagramSetup, angle),
     params: {
       ...params,
       ...(orientedScheme ? { scheme: orientedScheme } : {}),

@@ -500,7 +500,7 @@ export default function AlgCaseView({ puzzle, set, caseObj: caseProp, data, edit
         <div className="alg-case-detail-lean is-paired-player">
           <div className="alg-case-detail-lean-aside">
             <div className="alg-case-detail-lean-thumb">
-              <CaseThumb puzzle={puzzle} set={set} sticker={caseObj.sticker} alg={caseObj.algs[0]?.[0]?.alg || caseObj.setup || ''} setup={caseObj.setup} size={116} sq1BlackTop={sq1BlackTop} viewAngle={effectiveViewAngle} orientation={effectiveOrientation} />
+              <CaseThumb puzzle={puzzle} set={set} caseName={caseObj.name} sticker={caseObj.sticker} alg={caseObj.algs[0]?.[0]?.alg || caseObj.setup || ''} setup={caseObj.setup} size={116} sq1BlackTop={sq1BlackTop} viewAngle={effectiveViewAngle} orientation={effectiveOrientation} />
             </div>
             {mirror?.card && (
               <div className="alg-mirror-row">
@@ -509,6 +509,7 @@ export default function AlgCaseView({ puzzle, set, caseObj: caseProp, data, edit
                   <CaseThumb
                     puzzle={puzzle}
                     set={set}
+                    caseName={mirror.card.name}
                     sticker={mirror.card.sticker}
                     alg={mirror.card.algs[0]?.[0]?.alg || mirror.card.setup || ''}
                     setup={mirror.card.setup}
